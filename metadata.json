@@ -1,0 +1,6 @@
+{
+  "name": "Samay: Clock & Festivals",
+  "description": "All-in-one clock, countdown timer, lap stopwatch, and Indian holiday calendar tool with a built-in AI festival helper, designed by Abhishek Singh & AI.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
