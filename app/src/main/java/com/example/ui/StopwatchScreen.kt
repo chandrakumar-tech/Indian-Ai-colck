@@ -51,17 +51,25 @@ fun StopwatchScreen(
             while (isRunning) {
                 currentTimeMillis = System.currentTimeMillis() - baseTime
                 accumulatedTime = currentTimeMillis
-                delay(10) // tick every centisecond
+                delay(12) // smooth ticking matching standard frame rates but low CPU
             }
         }
     }
 
-    // Centiseconds Calculation
-    val totalMins = (accumulatedTime / 60000) % 60
-    val totalSecs = (accumulatedTime / 1000) % 60
-    val totalCentis = (accumulatedTime / 10) % 100
+    // Milliseconds Calculation & Formatting helper
+    fun formatMillis(timeMs: Long): String {
+        val hours = timeMs / 3600000
+        val mins = (timeMs / 60000) % 60
+        val secs = (timeMs / 1000) % 60
+        val millis = timeMs % 1000
+        return if (hours > 0) {
+            String.format("%02d:%02d:%02d.%03d", hours, mins, secs, millis)
+        } else {
+            String.format("%02d:%02d.%03d", mins, secs, millis)
+        }
+    }
 
-    val stopwatchFormatted = String.format("%02d:%02d.%02d", totalMins, totalSecs, totalCentis)
+    val stopwatchFormatted = formatMillis(accumulatedTime)
 
     Column(
         modifier = modifier
@@ -131,10 +139,7 @@ fun StopwatchScreen(
                         val currentLapIndex = lapsList.size + 1
                         val lapDiff = accumulatedTime - lastLapAccumulatedTime
                         
-                        val diffMins = (lapDiff / 60000) % 60
-                        val diffSecs = (lapDiff / 1000) % 60
-                        val diffCentis = (lapDiff / 10) % 100
-                        val lapFmt = String.format("%02d:%02d.%02d", diffMins, diffSecs, diffCentis)
+                        val lapFmt = formatMillis(lapDiff)
                         
                         lapsList.add(
                             0, // Add to top of list for quick visibility
@@ -212,7 +217,7 @@ fun StopwatchScreen(
                 )
             }
 
-            Divider(color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.6f))
+            HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.6f))
 
             // Lap List Column
             LazyColumn(

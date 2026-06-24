@@ -15,7 +15,17 @@ data class Festival(
     val type: FestivalType,
     val description: String,
     val ritualOrTip: String
-)
+) {
+    fun getFormattedDate(year: Int): String {
+        return try {
+            val cal = java.util.GregorianCalendar(year, month - 1, day)
+            val formatter = java.text.SimpleDateFormat("MMMM dd, yyyy (EEEE)", java.util.Locale.getDefault())
+            formatter.format(cal.time)
+        } catch (e: Exception) {
+            dateStr
+        }
+    }
+}
 
 object FestivalData {
     val list2026 = listOf(
@@ -89,12 +99,21 @@ object FestivalData {
         // March
         Festival(
             name = "Holi (Festival of Colors)",
-            dateStr = "March 04, 2026 (Wednesday)",
+            dateStr = "March 03, 2026 (Tuesday)",
             month = 3,
-            day = 4,
+            day = 3,
             type = FestivalType.GAZETTED,
             description = "The historic spring festival expressing the triumph of good over evil, the arrival of spring, and a day to forget old grievances.",
             ritualOrTip = "Play with organic herbal Gulal colors, light the Holika bonfire on Holi Eve, and serve Thandai and hot Gujiyas."
+        ),
+        Festival(
+            name = "Eid al-Fitr (Meethi Eid)",
+            dateStr = "March 20, 2026 (Friday)",
+            month = 3,
+            day = 20,
+            type = FestivalType.GAZETTED,
+            description = "A joyful Islamic holiday celebrated worldwide that marks the end of Ramadan, the holy month of fasting.",
+            ritualOrTip = "Wear new clothes, perform Eid prayers, distribute 'Zakat' (alms to poor), and serve delicious sweet Sheer Khurma."
         ),
         Festival(
             name = "Ugadi / Gudi Padwa",
@@ -143,15 +162,6 @@ object FestivalData {
             description = "Sikh New Year and spring Harvest Festival. Also marks the birth anniversary of Dr. B.R. Ambedkar, chief architect of the Indian Constitution.",
             ritualOrTip = "Perform lively Bhangra and Gidda dances, participate in colorful Nagar Kirtan processions, and share Kada Prasad."
         ),
-        Festival(
-            name = "Eid al-Fitr (Meethi Eid)",
-            dateStr = "April 20, 2026 (Monday)",
-            month = 4,
-            day = 20,
-            type = FestivalType.GAZETTED,
-            description = "A joyful Islamic holiday celebrated worldwide that marks the end of Ramadan, the holy month of fasting.",
-            ritualOrTip = "Wear new clothes, perform Eid prayers, distribute 'Zakat' (alms to poor), and serve delicious sweet Sheer Khurma."
-        ),
 
         // May
         Festival(
@@ -163,16 +173,25 @@ object FestivalData {
             description = "An international Buddhist festival celebrating the birth, enlightenment (Nirvana), and passing of Gautama Buddha.",
             ritualOrTip = "Wear white garments, practice tranquil meditation, offer flowers to Buddha statues, and distribute free vegetarian food."
         ),
-
-        // June
         Festival(
             name = "Eid al-Adha (Bakrid)",
-            dateStr = "June 08, 2026 (Monday)",
-            month = 6,
-            day = 8,
+            dateStr = "May 27, 2026 (Wednesday)",
+            month = 5,
+            day = 27,
             type = FestivalType.GAZETTED,
             description = "The Islamic 'Festival of Sacrifice' honoring Prophet Abraham's absolute willingness to sacrifice his son as an act of obedience to God.",
             ritualOrTip = "Offer morning congregational prayers, share festive meals with family, and help feed the poor and vulnerable."
+        ),
+
+        // June
+        Festival(
+            name = "Jagannath Ratha Yatra",
+            dateStr = "June 16, 2026 (Tuesday)",
+            month = 6,
+            day = 16,
+            type = FestivalType.REGIONAL,
+            description = "The colossal chariot festival of Lord Jagannath, Lord Balabhadra, and Goddess Subhadra at Puri, Odisha, attracting millions of devotees.",
+            ritualOrTip = "Offer prayers to Lord Jagannath, watch the grand chariot processions, and prepare or partake in 'Maha Prasad'."
         ),
 
         // July
@@ -245,9 +264,9 @@ object FestivalData {
         ),
         Festival(
             name = "Ganesh Chaturthi",
-            dateStr = "September 15, 2026 (Tuesday)",
+            dateStr = "September 14, 2026 (Monday)",
             month = 9,
-            day = 15,
+            day = 14,
             type = FestivalType.RESTRICTED,
             description = "An eleven-day festival commemorating the birth of Lord Ganesha, the lord of new beginnings and remover of obstacles.",
             ritualOrTip = "Install an eco-friendly clay Ganesha statue, offer delicious steamed sweet dumplings (Modaks), and chant 'Ganpati Bappa Morya!'"

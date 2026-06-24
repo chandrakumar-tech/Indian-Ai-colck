@@ -176,7 +176,7 @@ fun AiHelperScreen(
                                 .clickable {
                                     if (!isLoading) {
                                         inputText = ""
-                                        sendMessage(chipText, chatMessages) { loadingState ->
+                                        sendMessage(chipText, chatMessages, coroutineScope) { loadingState ->
                                             isLoading = loadingState
                                         }
                                     }
@@ -231,7 +231,7 @@ fun AiHelperScreen(
                             if (inputText.isNotBlank() && !isLoading) {
                                 val textToSend = inputText
                                 inputText = ""
-                                sendMessage(textToSend, chatMessages) { loadingState ->
+                                sendMessage(textToSend, chatMessages, coroutineScope) { loadingState ->
                                     isLoading = loadingState
                                 }
                             }
@@ -260,13 +260,14 @@ fun AiHelperScreen(
 private fun sendMessage(
     queryText: String,
     messagesList: MutableList<ChatMessage>,
+    scope: kotlinx.coroutines.CoroutineScope,
     onLoadingChange: (Boolean) -> Unit
 ) {
     messagesList.add(ChatMessage(queryText, isUser = true))
     onLoadingChange(true)
 
-    // Run coroutine safely inside the helper
-    kotlinx.coroutines.GlobalScope.launch(kotlinx.coroutines.Dispatchers.Main) {
+    // Run coroutine safely inside the bound lifecycle coroutine scope
+    scope.launch {
         try {
             val response = GeminiApiService.getGreetingOrResponse(queryText)
             messagesList.add(ChatMessage(response, isUser = false))

@@ -25,6 +25,9 @@ import com.example.ui.StopwatchScreen
 import com.example.ui.CalendarScreen
 import com.example.ui.AiHelperScreen
 import com.example.ui.CreditDialog
+import com.example.ui.SettingsDialog
+import com.example.data.SettingsManager
+import androidx.compose.material.icons.filled.Settings
 
 enum class AppTab(val title: String, val icon: ImageVector, val testTag: String) {
     CLOCK("Clock", Icons.Default.Schedule, "tab_clock"),
@@ -38,11 +41,13 @@ enum class AppTab(val title: String, val icon: ImageVector, val testTag: String)
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        SettingsManager.init(this)
         enableEdgeToEdge()
         setContent {
             MyApplicationTheme {
                 var currentTab by remember { mutableStateOf(AppTab.CLOCK) }
                 var showCreditsDialog by remember { mutableStateOf(false) }
+                var showSettingsDialog by remember { mutableStateOf(false) }
 
                 Scaffold(
                     modifier = Modifier.fillMaxSize(),
@@ -56,6 +61,16 @@ class MainActivity : ComponentActivity() {
                                 )
                             },
                             actions = {
+                                IconButton(
+                                    onClick = { showSettingsDialog = true },
+                                    modifier = Modifier.testTag("toolbar_settings_button")
+                                ) {
+                                    Icon(
+                                        imageVector = Icons.Default.Settings,
+                                        contentDescription = "Settings",
+                                        tint = MaterialTheme.colorScheme.primary
+                                    )
+                                }
                                 IconButton(
                                     onClick = { showCreditsDialog = true },
                                     modifier = Modifier.testTag("toolbar_credits_button")
@@ -128,6 +143,13 @@ class MainActivity : ComponentActivity() {
                 if (showCreditsDialog) {
                     CreditDialog(
                         onDismiss = { showCreditsDialog = false }
+                    )
+                }
+
+                // Show Settings Dialog
+                if (showSettingsDialog) {
+                    SettingsDialog(
+                        onDismiss = { showSettingsDialog = false }
                     )
                 }
             }
