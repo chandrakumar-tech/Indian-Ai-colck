@@ -26,6 +26,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
@@ -121,21 +122,46 @@ fun ClockScreen(
     val upcomingFestival = upcomingFestivalInfo.festival
     val upcomingYear = upcomingFestivalInfo.occurrenceYear
 
+    val configuration = LocalConfiguration.current
+    val screenHeightDp = configuration.screenHeightDp
+    val isSmallScreen = screenHeightDp < 760
+
+    // Adaptive design parameters to keep the layout incredibly clean and compact on small devices
+    val screenPadding = if (isSmallScreen) 14.dp else 20.dp
+    val topSpacerHeight = if (isSmallScreen) 4.dp else 10.dp
+    val headerPaddingBottom = if (isSmallScreen) 8.dp else 16.dp
+    val headerSpacerHeight = if (isSmallScreen) 6.dp else 12.dp
+    val clockCardVerticalPadding = if (isSmallScreen) 16.dp else 32.dp
+    val clockFontSize = if (isSmallScreen) 34.sp else 46.sp
+    val clockSpacerHeight = if (isSmallScreen) 8.dp else 12.dp
+    val tzSwitcherPillPaddingVertical = if (isSmallScreen) 4.dp else 6.dp
+    val tzSwitcherPillPaddingHorizontal = if (isSmallScreen) 10.dp else 14.dp
+    val tzSwitcherButtonPaddingVertical = if (isSmallScreen) 6.dp else 8.dp
+    val tzSwitcherButtonPaddingHorizontal = if (isSmallScreen) 10.dp else 14.dp
+    val mainSpacerHeight = if (isSmallScreen) 12.dp else 24.dp
+    val spotlightPaddingBottom = if (isSmallScreen) 6.dp else 12.dp
+    val festivalCardPadding = if (isSmallScreen) 12.dp else 18.dp
+    val festivalInnerSpacer1 = if (isSmallScreen) 8.dp else 12.dp
+    val festivalInnerSpacer2 = if (isSmallScreen) 8.dp else 12.dp
+    val ritualBoxPadding = if (isSmallScreen) 8.dp else 10.dp
+    val festivalInnerSpacer3 = if (isSmallScreen) 8.dp else 12.dp
+    val wisdomSpacerHeight = if (isSmallScreen) 16.dp else 30.dp
+
     Column(
         modifier = modifier
             .fillMaxSize()
             .verticalScroll(rememberScrollState())
-            .padding(20.dp),
+            .padding(screenPadding),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Top
     ) {
-        Spacer(modifier = Modifier.height(10.dp))
+        Spacer(modifier = Modifier.height(topSpacerHeight))
 
         // Top header label: Date in uppercase and IndicTime title
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(bottom = 16.dp),
+                .padding(bottom = headerPaddingBottom),
             horizontalAlignment = Alignment.Start
         ) {
             Text(
@@ -152,7 +178,7 @@ fun ClockScreen(
             )
         }
 
-        Spacer(modifier = Modifier.height(12.dp))
+        Spacer(modifier = Modifier.height(headerSpacerHeight))
 
         // Large Digital Clock Plate with 2rem (32dp) rounded corners matching the Geometric theme
         Card(
@@ -171,14 +197,14 @@ fun ClockScreen(
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(vertical = 32.dp, horizontal = 16.dp),
+                    .padding(vertical = clockCardVerticalPadding, horizontal = 16.dp),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center
             ) {
                 // Large styled monospaced clock display
                 Text(
                     text = "$formattedTime $formattedAmPm".uppercase(),
-                    fontSize = 46.sp,
+                    fontSize = clockFontSize,
                     fontWeight = FontWeight.Medium,
                     fontFamily = FontFamily.Monospace,
                     color = MaterialTheme.colorScheme.primary,
@@ -187,7 +213,7 @@ fun ClockScreen(
                     modifier = Modifier.testTag("digital_clock_text")
                 )
 
-                Spacer(modifier = Modifier.height(12.dp))
+                Spacer(modifier = Modifier.height(clockSpacerHeight))
 
                 // Timezone pill badge
                 val activeTz = if (showIstMode) {
@@ -205,7 +231,7 @@ fun ClockScreen(
                     modifier = Modifier
                         .clip(CircleShape)
                         .background(MaterialTheme.colorScheme.primary)
-                        .padding(horizontal = 14.dp, vertical = 6.dp)
+                        .padding(horizontal = tzSwitcherPillPaddingHorizontal, vertical = tzSwitcherPillPaddingVertical)
                 ) {
                     Text(
                         text = "$activeTzName • $activeOffsetStr".uppercase(),
@@ -215,7 +241,7 @@ fun ClockScreen(
                     )
                 }
 
-                Spacer(modifier = Modifier.height(16.dp))
+                Spacer(modifier = Modifier.height(if (isSmallScreen) 10.dp else 16.dp))
 
                 // Timezone switcher Toggle Button
                 Row(
@@ -225,7 +251,7 @@ fun ClockScreen(
                         .clip(RoundedCornerShape(12.dp))
                         .background(MaterialTheme.colorScheme.primary.copy(alpha = 0.08f))
                         .clickable { showIstMode = !showIstMode }
-                        .padding(horizontal = 14.dp, vertical = 8.dp)
+                        .padding(horizontal = tzSwitcherButtonPaddingHorizontal, vertical = tzSwitcherButtonPaddingVertical)
                 ) {
                     Icon(
                         imageVector = Icons.Default.LocationOn,
@@ -244,13 +270,13 @@ fun ClockScreen(
             }
         }
 
-        Spacer(modifier = Modifier.height(24.dp))
+        Spacer(modifier = Modifier.height(mainSpacerHeight))
 
         // Upcoming Festival Spotlight Card
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(start = 4.dp, bottom = 12.dp),
+                .padding(start = 4.dp, bottom = spotlightPaddingBottom),
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
@@ -322,7 +348,7 @@ fun ClockScreen(
             elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
         ) {
             Column(
-                modifier = Modifier.padding(18.dp)
+                modifier = Modifier.padding(festivalCardPadding)
             ) {
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
@@ -379,23 +405,23 @@ fun ClockScreen(
                     }
                 }
 
-                Spacer(modifier = Modifier.height(12.dp))
+                Spacer(modifier = Modifier.height(festivalInnerSpacer1))
 
                 Text(
                     text = upcomingFestival.description,
-                    style = MaterialTheme.typography.bodyMedium,
+                    style = if (isSmallScreen) MaterialTheme.typography.bodySmall else MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.85f),
-                    lineHeight = 20.sp
+                    lineHeight = if (isSmallScreen) 17.sp else 20.sp
                 )
 
-                Spacer(modifier = Modifier.height(12.dp))
+                Spacer(modifier = Modifier.height(festivalInnerSpacer2))
 
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
                         .clip(RoundedCornerShape(10.dp))
                         .background(MaterialTheme.colorScheme.primary.copy(alpha = 0.08f))
-                        .padding(10.dp)
+                        .padding(ritualBoxPadding)
                 ) {
                     Row {
                         Icon(
@@ -424,7 +450,7 @@ fun ClockScreen(
                     }
                 }
 
-                Spacer(modifier = Modifier.height(12.dp))
+                Spacer(modifier = Modifier.height(festivalInnerSpacer3))
 
                 Row(
                     modifier = Modifier.fillMaxWidth(),
@@ -479,7 +505,7 @@ fun ClockScreen(
             }
         }
 
-        Spacer(modifier = Modifier.height(30.dp))
+        Spacer(modifier = Modifier.height(wisdomSpacerHeight))
 
         // Culture Wisdom Card
         Card(
